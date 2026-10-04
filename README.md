@@ -2,6 +2,9 @@
 
 A game to get your right brain to work! You're shown an RGB value, can you pick the matching color?
 
+![Playing the game](images/play.jpg)
+![Winning screen](images/win.jpg)
+
 ## How to play
 
 - Look at the RGB value at the top and click the box you think matches it.
