@@ -21,7 +21,7 @@ function newRound() {
     won = false;
 
     rgb.textContent = goal;
-    promptText.textContent = "Can you guess this color?? NOW CHOOSE!";
+    promptText.textContent = "Can you guess this color??";
     message.textContent = "";
     newColors.textContent = "NEW COLORS";
     document.body.style.backgroundColor = "";
