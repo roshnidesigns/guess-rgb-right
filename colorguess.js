@@ -1,116 +1,74 @@
-var nums = 6;
-var colors = generateColor(nums);
-var goal = random(); //winning color chosen
-var clicked = goal; //color clicked by user...initializing it with anycolor
-var box = document.querySelectorAll(".box"); //color boxes
-var rgbdisplay = document.getElementById("rgbdisplay"); //color display text
-var msg = document.getElementById("message");
-var msg1 = document.getElementById("msg1");
-var msg2 = document.getElementById("msg2");
-var newcolor = document.querySelector(".newcolor");
-var main = document.getElementById("main_heading");
-var easy = document.getElementById("easy");
-var hard = document.getElementById("hard");
+const boxes = document.querySelectorAll(".box");
+const promptText = document.getElementById("prompt");
+const rgb = document.getElementById("rgb");
+const message = document.getElementById("message");
+const newColors = document.getElementById("new-colors");
+const easy = document.getElementById("easy");
+const hard = document.getElementById("hard");
 
-easy.addEventListener("click", function() {
-    newcolor.textContent = "NEW COLORS";
-    msg.textContent = "";
-    main.style.backgroundColor = "#F4B400";
-    hard.classList.remove("selected");
-    hard.classList.add("default");
-    easy.classList.add("selected");
-    easy.classList.remove("default");
-    nums = 3;
-    colors = generateColor(3);
-    goal = random();
-    rgbdisplay.textContent = goal;
+let count = 6; // number of boxes in play: 3 for easy, 6 for hard
+let goal; // the winning color
+let won = false;
 
-    for (var i = 0; i < box.length; i++) {
-        if (colors[i]) {
-            box[i].style.backgroundColor = colors[i];
-        } else {
-            box[i].style.display = "none";
-        }
-    }
-});
+function randomColor() {
+    const channel = () => Math.floor(Math.random() * 256);
+    return `rgb(${channel()}, ${channel()}, ${channel()})`;
+}
 
-hard.addEventListener("click", function() {
-    newcolor.textContent = "NEW COLORS";
-    msg.textContent = "";
-    main.style.backgroundColor = "#F4B400";
-    easy.classList.remove("selected");
-    easy.classList.add("default");
-    hard.classList.add("selected");
-    hard.classList.remove("default");
-    nums = 6;
-    colors = generateColor(6);
-    goal = random();
-    rgbdisplay.textContent = goal;
+function newRound() {
+    const colors = Array.from({ length: count }, randomColor);
+    goal = colors[Math.floor(Math.random() * count)];
+    won = false;
 
-    for (var i = 0; i < box.length; i++) {
-        box[i].style.backgroundColor = colors[i];
-        box[i].style.display = "block";
-    }
-});
-rgbdisplay.textContent = goal;
-for (var i = 0; i < colors.length; i++) {
-    box[i].style.backgroundColor = colors[i];
-    box[i].addEventListener("click", function() {
-        clicked = this.style.backgroundColor;
-        if (clicked === goal) {
-            win();
-        } else {
-            this.style.backgroundColor = "#171D1C";
-            msg.textContent = "TRY AGAIN :/";
-        }
+    rgb.textContent = goal;
+    promptText.textContent = "Can you guess this color?? NOW CHOOSE!";
+    message.textContent = "";
+    newColors.textContent = "NEW COLORS";
+    document.body.style.backgroundColor = "";
+
+    boxes.forEach((box, i) => {
+        box.style.backgroundColor = colors[i] || "";
+        box.style.display = colors[i] ? "" : "none";
     });
 }
 
-newcolor.addEventListener("click", function() {
-    msg.textContent = "";
-    colors = generateColor(nums);
-    goal = random();
-    rgbdisplay.textContent = goal;
-    newcolor.textContent = "NEW COLORS";
-
-    main.style.backgroundColor = "#F4B400";
-    msg1.textContent = "Can you guess this color??";
-    msg2.textContent = "NOW CHOOSE!";
-
-    for (var i = 0; i < box.length; i++) {
-        box[i].style.backgroundColor = colors[i];
-    }
-})
-
 function win() {
-    newcolor.textContent = "PLAY AGAIN?";
-
-    msg.textContent = "CORRECT! ^-^";
-    main.style.backgroundColor = goal;
-    msg1.textContent = "You guessed it right";
-    msg2.textContent = "AMAZING DUDE!!"
-    for (var i = 0; i < box.length; i++) {
-        box[i].style.backgroundColor = goal;
-    }
+    won = true;
+    promptText.textContent = "You guessed it right AMAZING DUDE!!";
+    message.textContent = "CORRECT! ^-^";
+    newColors.textContent = "PLAY AGAIN?";
+    document.body.style.backgroundColor = goal;
+    boxes.forEach((box) => (box.style.backgroundColor = "white"));
 }
 
-function random() {
-    return colors[Math.floor(Math.random() * colors.length)];
+function setMode(n, selected) {
+    count = n;
+    easy.classList.toggle("selected", selected === easy);
+    hard.classList.toggle("selected", selected === hard);
+    newRound();
 }
 
-function generateColor(num) {
-    var arr = [];
-    for (var i = 0; i < num; i++) {
-        arr.push(randomColor());
-    }
-    return arr;
-}
+boxes.forEach((box) => {
+    box.addEventListener("click", () => {
+        if (won) return;
+        if (box.style.backgroundColor === goal) {
+            win();
+        } else {
+            box.style.backgroundColor = ""; // fade the wrong guess into the background
+            message.textContent = "TRY AGAIN :/";
+        }
+    });
+});
 
-function randomColor() {
-    //pick red green and blue;
-    var red = Math.floor(Math.random() * 256);
-    var green = Math.floor(Math.random() * 256);
-    var blue = Math.floor(Math.random() * 256);
+easy.addEventListener("click", () => setMode(3, easy));
+hard.addEventListener("click", () => setMode(6, hard));
+newColors.addEventListener("click", newRound);
 
-    return "rgb(" + red + ", " + green + ", " + blue + ")";
-}
+// spacebar does the same as the NEW COLORS / PLAY AGAIN button
+document.addEventListener("keydown", (e) => {
+    if (e.code !== "Space" || e.repeat) return;
+    e.preventDefault(); // stop space from also clicking a focused button or scrolling
+    newRound();
+});
+
+newRound();

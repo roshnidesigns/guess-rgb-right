@@ -1,31 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>
-        CAN U GUESS THE COLOR!
-    </title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CAN U GUESS THE COLOR!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="colorguess.css">
 </head>
-<link rel="stylesheet" href="colorguess.css" type="text/css">
 
 <body>
-    <div class="top">THE MOST AMUSING GUESSING GAME EVER!</div>
-    <div id="main_heading">
-        <h1>
-            <span id="msg1">Can you guess this color??</span>
-            <br>
-            <span id="rgbdisplay">RGB</span>
-            <br>
-            <span id="msg2">NOW CHOOSE!</span>
-        </h1>
-    </div>
-    <div id="sub_heading">
-        <button class="newcolor">NEW COLORS</button>
-        <span id="message"></span>
-        <button id="easy" class="default">EASY</button>
+    <div id="title">The most amusing guessing game ever!</div>
+    <h1>
+        <span id="prompt">Can you guess this color?? NOW CHOOSE!</span>
+        <br>
+        <span id="rgb">RGB</span>
+    </h1>
+    <div id="modes">
+        <button id="easy">EASY</button>
         <button id="hard" class="selected">HARD</button>
     </div>
-    <div id="container">
+    <div id="boxes">
         <div class="box"></div>
         <div class="box"></div>
         <div class="box"></div>
@@ -33,7 +30,12 @@
         <div class="box"></div>
         <div class="box"></div>
     </div>
-    <script type="text/javascript" src="colorguess.js"></script>
+    <div id="controls">
+        <span id="message"></span>
+        <button id="new-colors">NEW COLORS</button>
+        <span id="hint">or press spacebar</span>
+    </div>
+    <script src="colorguess.js"></script>
 </body>
 
 </html>
