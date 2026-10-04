@@ -14,8 +14,8 @@ body {
     --text: var(--ink);
     margin: 0;
     padding: 0 16px;
-    min-height: 100vh;
-    min-height: 100dvh; /* mobile: ignore the collapsing browser toolbar */
+    height: 100vh;
+    height: 100dvh; /* mobile: ignore the collapsing browser toolbar */
     display: flex;
     flex-direction: column;
     background-color: var(--beige);
@@ -24,6 +24,15 @@ body {
     text-align: center;
     transition: background-color 0.5s, color 0.5s;
     -webkit-tap-highlight-color: transparent;
+}
+
+/* top half of the screen: title at the top, question just above the middle,
+   so the color grid starts at the center. Shrinks to fit on short screens. */
+header {
+    flex: 0 1 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 #title {
@@ -175,7 +184,16 @@ body.dark #modes .selected {
 
 /* phones: tighten vertical spacing so everything fits on one screen */
 @media (max-width: 600px) {
-    #title {
+    /* top half of the screen: title at the top, question just above the middle,
+   so the color grid starts at the center. Shrinks to fit on short screens. */
+header {
+    flex: 0 1 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#title {
         padding: 16px 0 8px;
     }
 
@@ -195,7 +213,16 @@ body.dark #modes .selected {
 
 /* short screens (phones in landscape): drop the tagline and squeeze spacing */
 @media (max-height: 500px) {
-    #title {
+    /* top half of the screen: title at the top, question just above the middle,
+   so the color grid starts at the center. Shrinks to fit on short screens. */
+header {
+    flex: 0 1 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#title {
         display: none;
     }
 
