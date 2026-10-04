@@ -13,7 +13,9 @@ body.dark {
 body {
     --text: var(--ink);
     margin: 0;
+    padding: 0 16px;
     min-height: 100vh;
+    min-height: 100dvh; /* mobile: ignore the collapsing browser toolbar */
     display: flex;
     flex-direction: column;
     background-color: var(--beige);
@@ -21,11 +23,12 @@ body {
     font-family: "Oswald", sans-serif;
     text-align: center;
     transition: background-color 0.5s, color 0.5s;
+    -webkit-tap-highlight-color: transparent;
 }
 
 #title {
     padding: 20px 0 34px;
-    font-size: 1.6em;
+    font-size: clamp(1rem, 4.6vw, 1.6rem);
     font-weight: 500;
     text-transform: uppercase;
     opacity: 0.5;
@@ -35,7 +38,7 @@ h1 {
     margin: 0;
     padding: 20px 0;
     font-weight: 500;
-    font-size: 1.6em;
+    font-size: clamp(1.1rem, 5vw, 1.6rem);
     text-transform: uppercase;
 }
 
@@ -44,13 +47,14 @@ h1 {
     margin-top: 8px;
     font-family: "Anton", sans-serif;
     font-weight: normal;
-    font-size: 2.6em;
+    font-size: clamp(1.8rem, min(9.8vw, 11vh), 4.2rem);
     line-height: 1.1;
+    white-space: nowrap;
 }
 
 #boxes {
     width: 100%;
-    max-width: 500px;
+    max-width: min(500px, 60vh); /* stay small enough to fit short screens */
     margin: 20px auto;
     display: flex;
     flex-wrap: wrap;
@@ -64,6 +68,8 @@ h1 {
     border: 2px solid var(--ink);
     border-radius: 2px;
     box-shadow: 0 6px 0 var(--ink);
+    cursor: pointer;
+    touch-action: manipulation;
     transition: background-color 0.5s, opacity 0.5s;
 }
 
@@ -101,6 +107,7 @@ button {
     box-shadow: 0 4px 0 var(--ink);
     background: none;
     cursor: pointer;
+    touch-action: manipulation; /* no double-tap zoom delay */
     transition: all 0.3s;
 }
 
@@ -118,10 +125,6 @@ button:active {
     color: var(--ink);
 }
 
-#new-colors:hover {
-    background-color: var(--red);
-    color: var(--beige);
-}
 
 /* secondary: EASY / HARD */
 #modes {
@@ -140,9 +143,6 @@ button:active {
     opacity: 0.5;
 }
 
-#modes button:hover {
-    opacity: 1;
-}
 
 #modes .selected {
     opacity: 1;
@@ -152,4 +152,64 @@ button:active {
 
 body.dark #modes .selected {
     color: var(--ink);
+}
+
+/* hover only on devices with a real pointer, so taps don't leave buttons stuck */
+@media (hover: hover) {
+    #new-colors:hover {
+        background-color: var(--red);
+        color: var(--beige);
+    }
+
+    #modes button:hover {
+        opacity: 1;
+    }
+}
+
+/* no spacebar on touch screens */
+@media (hover: none) {
+    #hint {
+        display: none;
+    }
+}
+
+/* phones: tighten vertical spacing so everything fits on one screen */
+@media (max-width: 600px) {
+    #title {
+        padding: 16px 0 8px;
+    }
+
+    h1 {
+        padding: 12px 0;
+    }
+
+    #boxes {
+        margin: 12px auto;
+    }
+
+    #controls {
+        padding: 12px 0 20px;
+        gap: 10px;
+    }
+}
+
+/* short screens (phones in landscape): drop the tagline and squeeze spacing */
+@media (max-height: 500px) {
+    #title {
+        display: none;
+    }
+
+    h1 {
+        padding: 8px 0 0;
+    }
+
+    #boxes {
+        max-width: 50vh;
+        margin: 8px auto;
+    }
+
+    #controls {
+        padding: 4px 0 12px;
+        gap: 8px;
+    }
 }
