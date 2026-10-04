@@ -14,4 +14,6 @@ A game to get your right brain to work! You're shown an RGB value, can you pick 
 
 ## Run it
 
-No setup needed, just open `index.html` in your browser.
+Play it online at **https://roshnidesigns.github.io/guess-rgb-right/**
+
+Or run it locally, no setup needed, just open `index.html` in your browser.
