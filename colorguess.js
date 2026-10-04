@@ -15,20 +15,31 @@ function randomColor() {
     return `rgb(${channel()}, ${channel()}, ${channel()})`;
 }
 
+// true when beige text reads better than dark text on this color (WCAG relative luminance)
+function isDark(color) {
+    const [r, g, b] = color.match(/\d+/g).map((c) => {
+        c /= 255;
+        return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b < 0.18;
+}
+
 function newRound() {
     const colors = Array.from({ length: count }, randomColor);
     goal = colors[Math.floor(Math.random() * count)];
     won = false;
 
-    rgb.textContent = goal;
-    promptText.textContent = "Can you guess this color??";
+    rgb.textContent = goal.replace("(", " ("); // "rgb (r, g, b)" reads better big
+    promptText.textContent = "Can you guess this color?";
     message.textContent = "";
     newColors.textContent = "NEW COLORS";
     document.body.style.backgroundColor = "";
+    document.body.classList.remove("dark");
 
     boxes.forEach((box, i) => {
         box.style.backgroundColor = colors[i] || "";
         box.style.display = colors[i] ? "" : "none";
+        box.style.opacity = "";
     });
 }
 
@@ -36,9 +47,10 @@ function win() {
     won = true;
     promptText.textContent = "You guessed it right AMAZING DUDE!!";
     message.textContent = "CORRECT! ^-^";
-    newColors.textContent = "PLAY AGAIN?";
+    newColors.textContent = "AGAIN?";
     document.body.style.backgroundColor = goal;
-    boxes.forEach((box) => (box.style.backgroundColor = "white"));
+    document.body.classList.toggle("dark", isDark(goal));
+    boxes.forEach((box) => (box.style.backgroundColor = "var(--beige)"));
 }
 
 function setMode(n, selected) {
@@ -54,7 +66,7 @@ boxes.forEach((box) => {
         if (box.style.backgroundColor === goal) {
             win();
         } else {
-            box.style.backgroundColor = ""; // fade the wrong guess into the background
+            box.style.opacity = 0; // fade out the wrong guess, shadow included
             message.textContent = "TRY AGAIN :/";
         }
     });
