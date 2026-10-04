@@ -16,8 +16,10 @@ body {
     padding: 0 16px;
     height: 100vh;
     height: 100dvh; /* mobile: ignore the collapsing browser toolbar */
-    display: flex;
-    flex-direction: column;
+    /* three rows: header, color grid, controls. The outer rows share the
+       leftover space equally, so the grid sits in the middle of the screen. */
+    display: grid;
+    grid-template-rows: 1fr auto 1fr;
     background-color: var(--beige);
     color: var(--text);
     font-family: "Oswald", sans-serif;
@@ -26,10 +28,8 @@ body {
     -webkit-tap-highlight-color: transparent;
 }
 
-/* top half of the screen: title at the top, question just above the middle,
-   so the color grid starts at the center. Shrinks to fit on short screens. */
+/* title at the top, question sitting right above the grid */
 header {
-    flex: 0 1 50%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -83,7 +83,7 @@ h1 {
 }
 
 #controls {
-    margin-top: auto;
+    align-self: end;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -184,10 +184,8 @@ body.dark #modes .selected {
 
 /* phones: tighten vertical spacing so everything fits on one screen */
 @media (max-width: 600px) {
-    /* top half of the screen: title at the top, question just above the middle,
-   so the color grid starts at the center. Shrinks to fit on short screens. */
+    /* title at the top, question sitting right above the grid */
 header {
-    flex: 0 1 50%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -213,10 +211,8 @@ header {
 
 /* short screens (phones in landscape): drop the tagline and squeeze spacing */
 @media (max-height: 500px) {
-    /* top half of the screen: title at the top, question just above the middle,
-   so the color grid starts at the center. Shrinks to fit on short screens. */
+    /* title at the top, question sitting right above the grid */
 header {
-    flex: 0 1 50%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
