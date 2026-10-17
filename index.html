@@ -32,13 +32,13 @@
             <span><span id="time"></span><small>s</small></span>
             <span id="score"></span>
         </div>
-        <span id="message"></span>
+        <span id="message" aria-live="polite"></span>
         <div id="modes">
             <label><input type="radio" name="difficulty" id="easy"> Easy</label>
             <label><input type="radio" name="difficulty" id="hard" checked> Hard</label>
         </div>
         <div id="actions">
-            <button id="rush">
+            <button id="rush" aria-pressed="false">
                 <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
                     <circle cx="12" cy="13" r="8" />
                     <path d="M12 9v4l2.5 2.5M9 2h6" />

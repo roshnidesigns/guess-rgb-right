@@ -2,9 +2,9 @@
     --beige: #E9E1C9;
     --ink: #2E211C;
     --yellow: #F2B630;
-    --red: #D9432F;
-    --brown: #B59A83; /* lighter brown accent */
-    --control-size: 16px; /* shared text size for EASY / HARD / RUSH MODE / NEW COLORS */
+    --red: #D9432F; /* main button hover */
+    --brown: #B59A83; /* RUSH MODE outline when switched on */
+    --control-size: 16px; /* shared text size for EASY / HARD and the two buttons */
 }
 
 /* on a dark winning color, flip the text to beige so it stays readable */
@@ -106,7 +106,7 @@ h1 {
 
 /* the seconds unit, 8px smaller than the number */
 #hud small {
-    font-size: calc(1.4rem - 8px);
+    font-size: calc(1em - 8px);
 }
 
 #hud[hidden] {
@@ -127,12 +127,19 @@ h1 {
     opacity: 0.7;
 }
 
-button {
-    font: inherit;
+/* shared text style for the buttons and the EASY / HARD labels */
+button,
+#modes label {
+    font-size: var(--control-size);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    padding: 10px 28px;
+}
+
+button {
+    font-family: inherit;
+    padding: 10px 12px;
+    white-space: nowrap;
     border: 2px solid var(--ink);
     border-radius: 2px;
     box-shadow: 0 4px 0 var(--ink);
@@ -149,7 +156,7 @@ button:active {
     transition-duration: 0.05s;
 }
 
-/* bottom row: main button with the RUSH MODE toggle beside it */
+/* bottom row: RUSH MODE toggle, then the main button */
 #actions {
     display: flex;
     gap: 12px;
@@ -157,19 +164,12 @@ button:active {
     max-width: 380px;
 }
 
-#actions button {
-    font-size: var(--control-size);
-    padding: 10px 12px;
-    white-space: nowrap;
-}
-
-/* primary: NEW COLORS / PLAY AGAIN */
+/* main button: NEW COLORS / START / SKIP / AGAIN? */
 #new-colors {
     flex: 1.4;
     background-color: var(--yellow);
     color: var(--ink);
 }
-
 
 /* EASY / HARD radio choice */
 #modes {
@@ -179,13 +179,9 @@ button:active {
 }
 
 #modes label {
-    font-size: var(--control-size);
     display: flex;
     align-items: center;
     gap: 8px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
     cursor: pointer;
 }
 
@@ -227,14 +223,14 @@ button:active {
     flex: none;
 }
 
-#rush.selected {
+#rush[aria-pressed="true"] {
     background-color: var(--text);
     color: var(--beige);
     border-color: var(--brown);
     box-shadow: 0 4px 0 var(--brown);
 }
 
-body.dark #rush.selected {
+body.dark #rush[aria-pressed="true"] {
     color: var(--ink);
 }
 
@@ -245,8 +241,8 @@ body.dark #rush.selected {
         color: var(--beige);
     }
 
-    /* unselected RUSH MODE gets a light tint on hover */
-    #rush:not(.selected):hover {
+    /* RUSH MODE, when off, gets a light tint on hover */
+    #rush[aria-pressed="false"]:hover {
         background-color: color-mix(in srgb, var(--text) 12%, transparent);
     }
 }
@@ -291,7 +287,7 @@ body.dark #rush.selected {
         --control-size: 13px;
     }
 
-    #actions button {
+    button {
         padding: 10px 6px;
         letter-spacing: 0.5px;
     }

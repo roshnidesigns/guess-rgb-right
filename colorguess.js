@@ -1,8 +1,11 @@
+// Guess RGB Right: match the RGB value to the right color box.
+// Normal mode: one color at a time. Rush mode: as many as you can in RUSH_SECONDS.
+
 const boxes = document.querySelectorAll(".box");
 const promptText = document.getElementById("prompt");
 const rgb = document.getElementById("rgb");
 const message = document.getElementById("message");
-const newColors = document.getElementById("new-colors");
+const mainButton = document.getElementById("new-colors");
 const easy = document.getElementById("easy");
 const hard = document.getElementById("hard");
 const rushToggle = document.getElementById("rush");
@@ -11,16 +14,16 @@ const timeText = document.getElementById("time");
 const scoreText = document.getElementById("score");
 
 const RUSH_SECONDS = 30;
+const PROMPT = "Can you guess this color?";
 
-let count = 6; // number of boxes in play: 3 for easy, 6 for hard
-let goal; // the winning color
-let won = false; // true when box clicks should be ignored
+let count = 6; // boxes in play: 3 for easy, 6 for hard
+let goal; // the winning color, as "rgb(r, g, b)"
+let locked = false; // true while box clicks should be ignored
 
-// rush mode: guess as many as you can in RUSH_SECONDS
-let rush = false; // rush mode selected
+let rush = false; // rush mode switched on
 let running = false; // a rush run is in progress
 let score = 0;
-let deadline;
+let deadline; // when the current rush run ends (ms timestamp)
 let timer;
 
 function randomColor() {
@@ -37,10 +40,14 @@ function isDark(color) {
     return 0.2126 * r + 0.7152 * g + 0.0722 * b < 0.18;
 }
 
-// best rush score for this browser tab session, kept separately for easy and hard
+// best rush score for this browser tab session, kept per difficulty and run length
+function bestKey() {
+    return `best-${count}-${RUSH_SECONDS}`;
+}
+
 function getBest() {
     try {
-        return Number(sessionStorage.getItem(`best-${count}-${RUSH_SECONDS}`)) || 0;
+        return Number(sessionStorage.getItem(bestKey())) || 0;
     } catch {
         return 0;
     }
@@ -48,7 +55,7 @@ function getBest() {
 
 function setBest(n) {
     try {
-        sessionStorage.setItem(`best-${count}-${RUSH_SECONDS}`, n);
+        sessionStorage.setItem(bestKey(), n);
     } catch {}
 }
 
@@ -69,47 +76,51 @@ function deal() {
     });
 }
 
+// ---- normal mode ----
+
 function newRound() {
     deal();
-    won = false;
-    promptText.textContent = "Can you guess this color?";
-    newColors.textContent = "NEW COLORS";
+    locked = false;
+    promptText.textContent = PROMPT;
+    mainButton.textContent = "NEW COLORS";
 }
 
 function win() {
-    won = true;
+    locked = true;
     promptText.textContent = "You guessed it right AMAZING DUDE!!";
     message.textContent = "CORRECT! ^-^";
-    newColors.textContent = "AGAIN?";
+    mainButton.textContent = "AGAIN?";
     document.body.style.backgroundColor = goal;
     document.body.classList.toggle("dark", isDark(goal));
     boxes.forEach((box) => (box.style.backgroundColor = "var(--beige)"));
 }
 
-// rush, before a run: show the colors but wait for START
-// timer and score row, shown between the color grid and the buttons in rush mode
+// ---- rush mode ----
+
+// timer and score row between the color grid and the buttons
 function showHud(seconds) {
     timeText.textContent = seconds;
     scoreText.textContent = `Score ${score}`;
 }
 
+// before a run: show the colors but wait for START
 function rushReady() {
     deal();
-    won = true;
+    locked = true;
     score = 0;
     showHud(RUSH_SECONDS);
-    promptText.textContent = "Can you guess this color?";
+    promptText.textContent = PROMPT;
     message.textContent = `BEST ${getBest()}`;
-    newColors.textContent = "START";
+    mainButton.textContent = "START";
 }
 
 function startRush() {
     running = true;
-    won = false;
+    locked = false;
     score = 0;
     deadline = Date.now() + RUSH_SECONDS * 1000;
     deal();
-    newColors.textContent = "SKIP";
+    mainButton.textContent = "SKIP";
     tick();
     timer = setInterval(tick, 100);
 }
@@ -123,16 +134,18 @@ function tick() {
 function endRush() {
     clearInterval(timer);
     running = false;
-    won = true;
+    locked = true;
     const best = getBest();
     if (score > best) setBest(score);
     showHud(0);
     promptText.textContent = `Time! You got ${score}`;
     message.textContent = score > best ? "NEW BEST!" : `BEST ${best}`;
-    newColors.textContent = "AGAIN?";
+    mainButton.textContent = "AGAIN?";
 }
 
-// leave any run in progress and start fresh in the current mode
+// ---- shared ----
+
+// stop any run in progress and start fresh in the current mode
 function reset() {
     clearInterval(timer);
     running = false;
@@ -155,7 +168,7 @@ function setCount(n) {
 
 boxes.forEach((box) => {
     box.addEventListener("click", () => {
-        if (won) return;
+        if (locked) return;
         if (box.style.backgroundColor !== goal) {
             box.style.opacity = 0; // fade out the wrong guess, shadow included
             message.textContent = "TRY AGAIN :/";
@@ -171,12 +184,14 @@ boxes.forEach((box) => {
 
 easy.addEventListener("change", () => setCount(3));
 hard.addEventListener("change", () => setCount(6));
+
 rushToggle.addEventListener("click", () => {
     rush = !rush;
-    rushToggle.classList.toggle("selected", rush);
+    rushToggle.setAttribute("aria-pressed", rush);
     reset();
 });
-newColors.addEventListener("click", action);
+
+mainButton.addEventListener("click", action);
 
 // spacebar does the same as the main button
 document.addEventListener("keydown", (e) => {
