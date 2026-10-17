@@ -3,6 +3,7 @@
     --ink: #2E211C;
     --yellow: #F2B630;
     --red: #D9432F;
+    --control-size: 16px; /* shared text size for EASY / HARD / RUSH MODE / NEW COLORS */
 }
 
 /* on a dark winning color, flip the text to beige so it stays readable */
@@ -37,7 +38,7 @@ header {
 
 #title {
     padding: 20px 0 34px;
-    font-size: clamp(1rem, 4.6vw, 1.6rem);
+    font-size: clamp(0.9rem, 3.6vw, 1.2rem);
     font-weight: 500;
     text-transform: uppercase;
     opacity: 0.5;
@@ -47,7 +48,7 @@ h1 {
     margin: 0;
     padding: 20px 0;
     font-weight: 500;
-    font-size: clamp(1.1rem, 5vw, 1.6rem);
+    font-size: clamp(1rem, 4vw, 1.25rem);
     text-transform: uppercase;
 }
 
@@ -56,7 +57,7 @@ h1 {
     margin-top: 8px;
     font-family: "Anton", sans-serif;
     font-weight: normal;
-    font-size: clamp(1.8rem, min(9.8vw, 11vh), 4.2rem);
+    font-size: clamp(1.6rem, min(8vw, 9vh), 3.2rem);
     line-height: 1.1;
     white-space: nowrap;
 }
@@ -89,6 +90,26 @@ h1 {
     flex-direction: column;
     align-items: center;
     gap: 12px;
+}
+
+/* rush mode: timer and score */
+#hud {
+    display: flex;
+    gap: 28px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums; /* digits don't jiggle as the timer counts */
+}
+
+/* the seconds unit, 8px smaller than the number */
+#hud small {
+    font-size: calc(1.4rem - 8px);
+}
+
+#hud[hidden] {
+    display: none;
 }
 
 #message {
@@ -136,6 +157,7 @@ button:active {
 }
 
 #actions button {
+    font-size: var(--control-size);
     padding: 10px 12px;
     white-space: nowrap;
 }
@@ -148,24 +170,47 @@ button:active {
 }
 
 
-/* secondary: EASY / HARD */
+/* EASY / HARD radio choice */
 #modes {
     display: flex;
     justify-content: center;
-    gap: 12px;
+    gap: 24px;
 }
 
-#modes button {
-    width: 84px;
-    padding: 6px 0;
-    font-size: 0.85em;
-    color: var(--text);
-    border-color: var(--text);
-    box-shadow: 0 4px 0 var(--text);
+#modes label {
+    font-size: var(--control-size);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
 }
 
+#modes input {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    padding: 2px;
+    border: 2px solid var(--text);
+    border-radius: 2px;
+    cursor: pointer;
+}
 
-/* RUSH MODE: on/off toggle, styled like EASY / HARD */
+/* checked: a smaller filled square inside, with a gap around it */
+#modes input:checked {
+    background-color: var(--text);
+    background-clip: content-box;
+}
+
+#modes input:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
+}
+
+/* RUSH MODE: on/off toggle */
 #rush {
     flex: 1;
     display: flex;
@@ -181,13 +226,11 @@ button:active {
     flex: none;
 }
 
-#modes .selected,
 #rush.selected {
     background-color: var(--text);
     color: var(--beige);
 }
 
-body.dark #modes .selected,
 body.dark #rush.selected {
     color: var(--ink);
 }
@@ -199,8 +242,7 @@ body.dark #rush.selected {
         color: var(--beige);
     }
 
-    /* unselected secondary buttons get a light tint on hover */
-    #modes button:not(.selected):hover,
+    /* unselected RUSH MODE gets a light tint on hover */
     #rush:not(.selected):hover {
         background-color: color-mix(in srgb, var(--text) 12%, transparent);
     }
@@ -233,11 +275,22 @@ body.dark #rush.selected {
     }
 }
 
-/* very narrow phones: keep the main button the wider one */
+/* very narrow phones: step all the controls down together */
 @media (max-width: 360px) {
-    #rush {
-        font-size: 0.85em;
-        letter-spacing: 1px;
+    :root {
+        --control-size: 14px;
+    }
+}
+
+/* extra-narrow windows: shrink the bottom row so it stays inside the margins */
+@media (max-width: 300px) {
+    :root {
+        --control-size: 13px;
+    }
+
+    #actions button {
+        padding: 10px 6px;
+        letter-spacing: 0.5px;
     }
 }
 

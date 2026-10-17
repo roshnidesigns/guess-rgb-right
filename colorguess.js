@@ -6,6 +6,9 @@ const newColors = document.getElementById("new-colors");
 const easy = document.getElementById("easy");
 const hard = document.getElementById("hard");
 const rushToggle = document.getElementById("rush");
+const hud = document.getElementById("hud");
+const timeText = document.getElementById("time");
+const scoreText = document.getElementById("score");
 
 const RUSH_SECONDS = 30;
 
@@ -84,10 +87,19 @@ function win() {
 }
 
 // rush, before a run: show the colors but wait for START
+// timer and score row, shown between the color grid and the buttons in rush mode
+function showHud(seconds) {
+    timeText.textContent = seconds;
+    scoreText.textContent = `Score ${score}`;
+}
+
 function rushReady() {
     deal();
     won = true;
-    promptText.textContent = `${RUSH_SECONDS} seconds · best ${getBest()}`;
+    score = 0;
+    showHud(RUSH_SECONDS);
+    promptText.textContent = "Can you guess this color?";
+    message.textContent = `BEST ${getBest()}`;
     newColors.textContent = "START";
 }
 
@@ -105,7 +117,7 @@ function startRush() {
 function tick() {
     const left = Math.ceil((deadline - Date.now()) / 1000);
     if (left <= 0) return endRush();
-    promptText.textContent = `${left}s · score ${score}`;
+    showHud(left);
 }
 
 function endRush() {
@@ -114,6 +126,7 @@ function endRush() {
     won = true;
     const best = getBest();
     if (score > best) setBest(score);
+    showHud(0);
     promptText.textContent = `Time! You got ${score}`;
     message.textContent = score > best ? "NEW BEST!" : `BEST ${best}`;
     newColors.textContent = "AGAIN?";
@@ -123,6 +136,7 @@ function endRush() {
 function reset() {
     clearInterval(timer);
     running = false;
+    hud.hidden = !rush;
     if (rush) rushReady();
     else newRound();
 }
@@ -134,10 +148,8 @@ function action() {
     else startRush();
 }
 
-function setCount(n, selected) {
+function setCount(n) {
     count = n;
-    easy.classList.toggle("selected", selected === easy);
-    hard.classList.toggle("selected", selected === hard);
     reset();
 }
 
@@ -157,8 +169,8 @@ boxes.forEach((box) => {
     });
 });
 
-easy.addEventListener("click", () => setCount(3, easy));
-hard.addEventListener("click", () => setCount(6, hard));
+easy.addEventListener("change", () => setCount(3));
+hard.addEventListener("change", () => setCount(6));
 rushToggle.addEventListener("click", () => {
     rush = !rush;
     rushToggle.classList.toggle("selected", rush);

@@ -28,10 +28,14 @@
         <div class="box"></div>
     </div>
     <div id="controls">
+        <div id="hud" hidden>
+            <span><span id="time"></span><small>s</small></span>
+            <span id="score"></span>
+        </div>
         <span id="message"></span>
         <div id="modes">
-            <button id="easy">EASY</button>
-            <button id="hard" class="selected">HARD</button>
+            <label><input type="radio" name="difficulty" id="easy"> Easy</label>
+            <label><input type="radio" name="difficulty" id="hard" checked> Hard</label>
         </div>
         <div id="actions">
             <button id="rush">
