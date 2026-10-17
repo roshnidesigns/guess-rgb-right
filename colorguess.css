@@ -127,9 +127,22 @@ button:active {
     transition-duration: 0.05s;
 }
 
+/* bottom row: main button with the RUSH MODE toggle beside it */
+#actions {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    max-width: 380px;
+}
+
+#actions button {
+    padding: 10px 12px;
+    white-space: nowrap;
+}
+
 /* primary: NEW COLORS / PLAY AGAIN */
 #new-colors {
-    width: 220px;
+    flex: 1.4;
     background-color: var(--yellow);
     color: var(--ink);
 }
@@ -149,17 +162,33 @@ button:active {
     color: var(--text);
     border-color: var(--text);
     box-shadow: 0 4px 0 var(--text);
-    opacity: 0.5;
 }
 
 
-#modes .selected {
-    opacity: 1;
+/* RUSH MODE: on/off toggle, styled like EASY / HARD */
+#rush {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: var(--text);
+    border-color: var(--text);
+    box-shadow: 0 4px 0 var(--text);
+}
+
+#rush svg {
+    flex: none;
+}
+
+#modes .selected,
+#rush.selected {
     background-color: var(--text);
     color: var(--beige);
 }
 
-body.dark #modes .selected {
+body.dark #modes .selected,
+body.dark #rush.selected {
     color: var(--ink);
 }
 
@@ -170,8 +199,10 @@ body.dark #modes .selected {
         color: var(--beige);
     }
 
-    #modes button:hover {
-        opacity: 1;
+    /* unselected secondary buttons get a light tint on hover */
+    #modes button:not(.selected):hover,
+    #rush:not(.selected):hover {
+        background-color: color-mix(in srgb, var(--text) 12%, transparent);
     }
 }
 
@@ -184,14 +215,7 @@ body.dark #modes .selected {
 
 /* phones: tighten vertical spacing so everything fits on one screen */
 @media (max-width: 600px) {
-    /* title at the top, question sitting right above the grid */
-header {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-#title {
+    #title {
         padding: 16px 0 8px;
     }
 
@@ -209,16 +233,17 @@ header {
     }
 }
 
-/* short screens (phones in landscape): drop the tagline and squeeze spacing */
-@media (max-height: 500px) {
-    /* title at the top, question sitting right above the grid */
-header {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+/* very narrow phones: keep the main button the wider one */
+@media (max-width: 360px) {
+    #rush {
+        font-size: 0.85em;
+        letter-spacing: 1px;
+    }
 }
 
-#title {
+/* short screens (phones in landscape): drop the tagline and squeeze spacing */
+@media (max-height: 500px) {
+    #title {
         display: none;
     }
 
