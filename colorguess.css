@@ -3,6 +3,7 @@
     --ink: #2E211C;
     --yellow: #F2B630;
     --red: #D9432F;
+    --brown: #B59A83; /* lighter brown accent */
     --control-size: 16px; /* shared text size for EASY / HARD / RUSH MODE / NEW COLORS */
 }
 
@@ -229,6 +230,8 @@ button:active {
 #rush.selected {
     background-color: var(--text);
     color: var(--beige);
+    border-color: var(--brown);
+    box-shadow: 0 4px 0 var(--brown);
 }
 
 body.dark #rush.selected {
